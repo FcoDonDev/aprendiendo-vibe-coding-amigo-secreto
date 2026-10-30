@@ -1,31 +1,41 @@
-# Iteración 3 — bases consolidadas: reglas + tipo de app + alcance
+# Iteración 3 — bases consolidadas: reglas + alcance + stack
 
 El prompt de las iteraciones anteriores se complementa con el *alcance* del
-producto: tipo de aplicación, la decisión de omitir autenticación y el rol de
-los correos. Sigue siendo una única instrucción (one-shot), sin especificar
-tecnología — esa decisión la deja al modelo.
+producto (tipo de aplicación, autenticación omitida, rol de los correos) y,
+por primera vez, con la **tecnología** fijada explícitamente. Sigue siendo
+una única instrucción (one-shot).
 
 ## Prompt (verbatim)
 
 ```text
 Crea una aplicación para jugar al amigo secreto.
 
-Bases del proyecto:
-- Reglas del juego:
-  - Se ingresa la lista de participantes (nombre y correo)
-  - El sistema sortea de forma aleatoria quién le regala a quién
-  - Nadie puede salir asignado a sí mismo
-  - Cada participante recibe su asignación por correo electrónico
-- Tipo de aplicación: aplicación web
-- Autenticación: omitida en esta fase (una persona organiza el sorteo y punto)
-- Envío de correos: notificar a cada participante el resultado de su asignación
+# Diseño funcional:
+  - Aplicación web.
+  - Sin autenticación en esta fase (una persona organiza el sorteo y punto)
+  - Reglas del juego:
+    - Se ingresa la lista de participantes (nombre y correo)
+    - Se requiere un mínimo de 2 participantes.
+    - El sistema sortea de forma aleatoria quién le regala a quién
+    - Nadie puede salir asignado a sí mismo
+    - Cada participante debe regalar a exactamente una persona y recibir exactamente un regalo.
+    - Cada participante recibe su asignación por correo electrónico
+    - Cada correo debe contener exclusivamente la asignación del participante correspondiente.
+  
+# Implementación
+- Lenguaje: TypeScript
+- Framework: Next.js 
+- UI: React + Tailwind CSS
+- Persistencia: Sin base de datos
+- Envío de correos: SMTP 
 ```
 
 ## Qué produjo
 
-Sin preguntas de aclaración esta vez: el agente construyó directamente una
-**aplicación Next.js** (App Router) con TypeScript, React, Tailwind CSS y
-Nodemailer — eligió el stack por su cuenta, ya que el prompt no lo definía:
+A diferencia de la iteración 2, esta vez **no hubo preguntas de aclaración**:
+el prompt ya cerraba reglas, alcance y stack, así que el agente construyó
+directamente una **aplicación Next.js** (App Router) con TypeScript, React,
+Tailwind CSS y Nodemailer, siguiendo la especificación:
 
 - Server Action (`app/actions.ts`): normaliza, valida, sortea y envía.
 - Algoritmo de derangement (`lib/sorteo.ts`) con `crypto` del sistema.
@@ -46,21 +56,32 @@ las direcciones inexistentes (código 550), distinguiendo entregas de rebotes.
 
 ## Qué le faltó
 
-- Al no fijar el stack, el modelo eligió por sí solo (Next.js + Tailwind):
-  una app más "grande" que la de la iteración 2 para el mismo alcance.
+- El prompt fijó el stack pero no el detalle del reporte de errores de envío;
+  el modo de reportar rebotes por destinatario fue decisión del modelo (buena
+  en esta ocasión, mas no garantizada en un prompt siguiente).
 - El listado de fallos de envío mezcla severidad: un simple "550 No Such
   User" aparece como aviso del sistema, cuando la regla del negocio podría
   pedir validar los correos *antes* de sortear.
-- Pequeño detalle de copy: el resumen dice "Se enviaron 1 correos" con 4
-  participantes registrados cuando solo 1 llegó a entregarse.
+- Pequeño detalle de copy: el resumen dice "Se enviaron 1 correos".
 
 ## La lección
 
-Dar el alcance (qué es la app, qué fase, qué hace) sin dar el stack tampoco
-frena al modelo: improvisa el stack, ya no la funcionalidad. La calidad de la
-evidencia de errores reportados (fallos por destinatario) supera a las
-versiones anteriores; para el punto del blog de esta iteración, el contraste
-"reglas solas" (iteración 2) vs "reglas + alcance" (esta) es el que enseña.
+Con reglas + alcance + stack explícitos, el modelo **deja de preguntar y
+construye**. Compara con la iteración 2: las preguntas del agente marcan los
+huecos del prompt; aquí casi no hay huecos y el resultado es la app
+más completa de las cuatro primeras. El contraste con la iteración 2
+("reglas solas" vs "reglas + alcance + stack") es el que enseña.
+
+## Métricas de la sesión (export `assets/sesion.json`)
+
+| Dato | Valor |
+|---|---|
+| Modelo | `opencode-go/glm-5.3-flash` (GLM 5.3 Flash, de pago) |
+| Duración | 5,7 min |
+| Mensajes | 40 (1 del usuario, 36 del agente) |
+| Tool calls | 38: shell ×16, write ×11, read ×6, edit ×4, execute ×1 |
+| Tokens | entrada 49.530 · salida 11.371 · razonamiento 2.904 · caché leída 708.288 |
+| Coste registrado | $0,0358 |
 
 ## Evidencia (`assets/`)
 

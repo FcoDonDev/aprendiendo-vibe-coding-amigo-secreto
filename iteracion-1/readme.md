@@ -41,6 +41,17 @@ iniciativa (añadió exclusiones y las tarjetas sorpresa por su cuenta), pero la
 *pequeña* app resultante es local: guarda los sorteos solo en el navegador.
 Punto de partida perfecto para comparar contra los prompts más específicos.
 
+## Métricas de la sesión (export `assets/sesion.json`)
+
+| Dato | Valor |
+|---|---|
+| Modelo | `opencode-go/glm-5.3-flash` (GLM 5.3 Flash, de pago) |
+| Duración | 1,4 min |
+| Mensajes | 8 (1 del usuario, 6 del agente) |
+| Tool calls | 5: shell ×2, read ×1, write ×1, edit ×1 |
+| Tokens | entrada 10.404 · salida 5.890 · razonamiento 512 · caché leída 42.432 |
+| Coste registrado | $0,0060 |
+
 ## Evidencia (`assets/`)
 
 | Archivo | Qué muestra |
@@ -49,7 +60,7 @@ Punto de partida perfecto para comparar contra los prompts más específicos.
 | `app-2.png` | 3 participantes agregados (Pedro, Juan, Diego) y los selectores de exclusiones por persona que la app generó por su cuenta. |
 | `app-3.png` | Tras sortear: tarjetas secretas ocultas ("toca para revelar"), sin ver la del resto. |
 | `app-4.png` | Asignaciones reveladas: Pedro → Juan, Juan → Diego, Diego → Pedro (derangement válido). |
-| `opencode-prompt-result.png` | La TUI de OpenCode con la respuesta final del agente: lo que construyó, la verificación con simulaciones y el coste (~$0.01). |
+| `opencode-prompt-result.png` | La TUI de OpenCode con la respuesta final del agente: lo que construyó, la verificación con simulaciones y el coste ($0,0060). |
 
 ## Conversación completa
 

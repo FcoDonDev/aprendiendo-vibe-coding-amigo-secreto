@@ -1,31 +1,41 @@
 # Iteración 4 — plan primero, build después
 
-El mismo prompt de la iteración 3, pero **en dos fases**: primero el modo
-`plan` de OpenCode (arquitectura y pasos antes de tocar código) y, en la misma
-sesión, el cambio a build con una única segunda instrucción.
+El mismo prompt de la iteración 3 (verbatim idéntico, revisado contra la
+transcripción de la sesión), pero **en dos fases**: primero el modo `plan` de
+OpenCode (arquitectura y pasos antes de tocar código) y, en la misma sesión,
+el cambio a build con una única segunda instrucción.
 
 ## Prompt (verbatim)
 
-La instrucción de planificación (idéntica a la iteración 3):
+La instrucción de planificación:
 
 ```text
 Crea una aplicación para jugar al amigo secreto.
 
-Bases del proyecto:
-- Reglas del juego:
-  - Se ingresa la lista de participantes (nombre y correo)
-  - El sistema sortea de forma aleatoria quién le regala a quién
-  - Nadie puede salir asignado a sí mismo
-  - Cada participante recibe su asignación por correo electrónico
-- Tipo de aplicación: aplicación web
-- Autenticación: omitida en esta fase (una persona organiza el sorteo y punto)
-- Envío de correos: notificar a cada participante el resultado de su asignación
+# Diseño funcional:
+  - Aplicación web.
+  - Sin autenticación en esta fase (una persona organiza el sorteo y punto)
+  - Reglas del juego:
+    - Se ingresa la lista de participantes (nombre y correo)
+    - Se requiere un mínimo de 2 participantes.
+    - El sistema sortea de forma aleatoria quién le regala a quién
+    - Nadie puede salir asignado a sí mismo
+    - Cada participante debe regalar a exactamente una persona y recibir exactamente un regalo.
+    - Cada participante recibe su asignación por correo electrónico
+    - Cada correo debe contener exclusivamente la asignación del participante correspondiente.
+  
+# Implementación
+- Lenguaje: TypeScript
+- Framework: Next.js 
+- UI: React + Tailwind CSS
+- Persistencia: Sin base de datos
+- Envío de correos: SMTP 
 ```
 
 Y, una vez entregado el plan y cambiado al modo build:
 
 ```text
-Ahora construye lo que planificaste.
+Procede con la implementacion completa del proyecto
 ```
 
 ## Qué produjo
@@ -41,8 +51,8 @@ Ahora construye lo que planificaste.
   (respondí: genérico por variables de entorno) y si quería reintentos de
   envío (respondí: no, simple). Sus recomendaciones de por qué son parte del
   valor del modo plan.
-- El plan es "gratis" comparado con el build: la fase plan consumió $0.00 y
-  el build $0.04.
+- El plan es "gratis" comparado con el build: la fase plan marcaba $0.00 en
+  la TUI; la sesión completa terminó en $0.04 (plan + build).
 
 **Fase build** (misma sesión, tras la instrucción de construir):
 
@@ -80,6 +90,20 @@ frágil en la devolución de errores que su versión improvisada de la iteració
 3: plan no es "mejor", es "más controlado" — ambos se editan después.
 Vale también revisar el detalle: el plan aparece con coste $0.00 y estructura
 completa, ideal para iterar barato el diseño antes de gastar en build.
+
+## Métricas de la sesión (export `assets/sesion.json`)
+
+Único agente del experimento con **dos instrucciones del usuario** (plan +
+build) en la misma sesión.
+
+| Dato | Valor |
+|---|---|
+| Modelo | `opencode-go/glm-5.3-flash` (GLM 5.3 Flash, de pago) |
+| Duración | 12,2 min (≈5,9 min hasta la instrucción de build + ≈6,3 min de build) |
+| Mensajes | 53 (2 del usuario, 45 del agente) |
+| Tool calls | 53: shell ×27, write ×15, edit ×5, read ×3, glob ×1, grep ×1, question ×1 |
+| Tokens | entrada 39.227 · salida 13.075 · razonamiento 4.289 · caché leída 745.824 |
+| Coste registrado | $0,0369 (fase plan ≈$0,00; fase build el resto) |
 
 ## Evidencia (`assets/`)
 

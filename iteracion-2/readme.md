@@ -56,6 +56,17 @@ decidir en silencio (como en la iteración 1), ahora **pregunta** lo que el
 prompt no cerró. Sus preguntas de claridad son el mapa de lo que falta en tu
 propio prompt.
 
+## Métricas de la sesión (export `assets/session.json`)
+
+| Dato | Valor |
+|---|---|
+| Modelo | `opencode-go/glm-5.3-flash` (GLM 5.3 Flash, de pago) |
+| Duración | 5,5 min |
+| Mensajes | 22 (1 del usuario, 20 del agente) |
+| Tool calls | 25: shell ×12, write ×10, read ×1, glob ×1, question ×1 |
+| Tokens | entrada 21.224 · salida 8.784 · razonamiento 1.377 · caché leída 214.336 |
+| Coste registrado | $0,0147 |
+
 ## Evidencia (`assets/`)
 
 | Archivo | Qué muestra |
