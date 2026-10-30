@@ -24,8 +24,7 @@ una única instrucción por sesión, sin contexto compartido entre ejecuciones.
 
 Cada carpeta incluye:
 
-- `prompt.txt` — la instrucción exacta usada (copia y pega).
-- `readme.md` — el prompt, qué produjo y la referencia a la evidencia.
+- `readme.md` — el prompt original verbatim, qué produjo y la referencia a la evidencia.
 - `app/` — el código resultante, tal como lo generó el agente.
 - `assets/` — capturas de pantalla de la app y/o del agente, más la conversación
   real de la sesión OpenCode (export del historial).
@@ -34,7 +33,7 @@ Cada carpeta incluye:
 
 1. Instala OpenCode ([guía](https://thetastydev.com/es/blog/instalar-opencode/)).
 2. Crea una carpeta vacía, entra en ella y abre `opencode`.
-3. Pega el `prompt.txt` de la iteración tal cual, como única instrucción.
+3. Pega el prompt verbatim del `readme.md` de la iteración tal cual, como única instrucción.
 4. Prueba el resultado de `app/` con las instrucciones de su `app/README.md`.
 
 > Nota: las rutas locales dentro de los exports de sesión fueron anonimizadas
