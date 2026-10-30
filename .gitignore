@@ -1,0 +1,15 @@
+# dependencias y construcción
+node_modules/
+dist/
+.next/
+
+# entorno: JAMAS commitear credenciales SMTP
+.env
+.env.local
+*.env
+!.env.example
+
+# sesión local y logs
+*.log
+npm-debug.log*
+tsconfig.tsbuildinfo

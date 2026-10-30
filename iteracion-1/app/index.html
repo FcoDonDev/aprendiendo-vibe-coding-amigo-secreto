@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎁 Amigo Secreto</title>
+<style>
+  :root {
+    --bg: #0f0e17;
+    --surface: #1a1825;
+    --surface-2: #232033;
+    --accent: #ff8906;
+    --accent-2: #f25f4c;
+    --text: #fffffe;
+    --text-soft: #a7a9be;
+    --ok: #3ddc97;
+    --radius: 14px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem 4rem;
+  }
+
+  header { text-align: center; margin-bottom: 2rem; }
+  header h1 { font-size: 2.2rem; letter-spacing: 1px; }
+  header p  { color: var(--text-soft); margin-top: .4rem; }
+
+  .container {
+    width: 100%;
+    max-width: 720px;
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid #2a2740;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  }
+  .card h2 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  /* --- Formulario de participantes --- */
+  form { display: flex; gap: .7rem; }
+  input[type="text"] {
+    flex: 1;
+    padding: .8rem 1rem;
+    border: 1px solid #3a3655;
+    border-radius: 10px;
+    background: var(--surface-2);
+    color: var(--text);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color .2s;
+  }
+  input[type="text"]:focus { border-color: var(--accent); }
+
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: .8rem 1.3rem;
+    transition: transform .1s, filter .2s;
+  }
+  button:active { transform: scale(.96); }
+
+  .btn-primary { background: var(--accent); color: #1a1825; }
+  .btn-primary:hover { filter: brightness(1.1); }
+  .btn-outline {
+    background: transparent;
+    color: var(--text-soft);
+    border: 1px solid #3a3655;
+  }
+  .btn-outline:hover { color: var(--text); border-color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent-2);
+    border: 1px solid #4a2626;
+  }
+  .btn-danger:hover { background: #2a181d; }
+
+  /* --- Lista de participantes --- */
+  ul { list-style: none; display: grid; gap: .55rem; }
+  li.participante {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface-2);
+    border-radius: 10px;
+    padding: .7rem 1rem;
+    animation: appear .25s ease;
+  }
+  li.participante span.nombre { font-weight: 600; }
+  .chip-q {
+    background: #2a2740;
+    color: var(--text-soft);
+    border-radius: 8px;
+    padding: .2rem .6rem;
+    font-size: .8rem;
+    margin-left: .6rem;
+  }
+  .acciones { display: flex; gap: .4rem; align-items: center; }
+  .btn-x {
+    background: none;
+    color: var(--text-soft);
+    font-size: 1.1rem;
+    padding: .2rem .5rem;
+  }
+  .btn-x:hover { color: var(--accent-2); }
+
+  .vacio { color: var(--text-soft); text-align: center; padding: 1rem 0; font-style: italic; }
+
+  /* --- Sorteo --- */
+  .zona-sorteo { display: flex; flex-direction: column; gap: 1rem; align-items: center; }
+  #btn-sorteo {
+    font-size: 1.15rem;
+    padding: 1rem 2.5rem;
+    border-radius: 999px;
+    width: 100%;
+  }
+  #btn-sorteo:disabled { opacity: .4; cursor: not-allowed; }
+
+  .excluidos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    justify-content: center;
+    width: 100%;
+  }
+  .excluidos select {
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid #3a3655;
+    border-radius: 8px;
+    padding: .45rem .6rem;
+    font-size: .9rem;
+  }
+
+  /* --- Resultados --- */
+  .grid-resultados {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: .8rem;
+  }
+  .tarjeta {
+    position: relative;
+    height: 110px;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    perspective: 600px;
+  }
+  .cara {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    padding: .6rem;
+    text-align: center;
+    transition: transform .5s, opacity .5s;
+    backface-visibility: hidden;
+  }
+  .cara-frontal {
+    background: linear-gradient(135deg, #4a2c6d, #2d2150);
+    border: 2px dashed #7b5ea7;
+    color: var(--text-soft);
+    font-size: .95rem;
+    gap: .3rem;
+  }
+  .cara-frontal .emoji { font-size: 1.8rem; }
+  .cara-trasera {
+    background: var(--accent);
+    color: #1a1825;
+    transform: rotateY(180deg);
+    justify-content: center;
+  }
+  .cara-trasera .de   { font-size: .75rem; opacity: .75; }
+  .cara-trasera .para { font-size: 1.15rem; font-weight: 800; }
+  .tarjeta.revelada .cara-frontal { transform: rotateY(180deg); opacity: 0; }
+  .tarjeta.revelada .cara-trasera { transform: rotateY(0); opacity: 1; }
+
+  .mensaje {
+    min-height: 1.4rem;
+    text-align: center;
+    color: var(--text-soft);
+    font-size: .95rem;
+  }
+  .mensaje.error   { color: var(--accent-2); }
+  .mensaje.exito   { color: var(--ok); }
+
+  .nota { color: var(--text-soft); font-size: .85rem; text-align: center; }
+
+  @keyframes appear { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; } }
+
+  @media (max-width: 520px) {
+    form { flex-direction: column; }
+    header h1 { font-size: 1.7rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎁 Amigo Secreto</h1>
+  <p>Agrega a los participantes, sortea y descubre quién regala a quién.</p>
+</header>
+
+<div class="container">
+
+  <!-- Participantes -->
+  <section class="card">
+    <h2>Participantes</h2>
+    <form id="form-participante" autocomplete="off">
+      <input type="text" id="input-nombre" placeholder="Nombre del participante" maxlength="40" required>
+      <button class="btn-primary" type="submit">+ Agregar</button>
+    </form>
+    <div id="lista-participantes" style="margin-top: 1rem;"></div>
+  </section>
+
+  <!-- Sorteo -->
+  <section class="card">
+    <h2>Sorteo</h2>
+    <div class="zona-sorteo">
+      <div class="excluidos" id="zona-exclusiones" hidden>
+        <!-- Exclusiones dinámicas -->
+      </div>
+      <p class="nota" id="nota-exclusiones" hidden>
+        Si hay personas que no deben salir juntas (por ejemplo, una pareja), exclúyelas aquí 👇
+      </p>
+      <button id="btn-sorteo" class="btn-primary" disabled>🎲 Sortear</button>
+      <p class="mensaje" id="mensaje-sorteo">Necesitas al menos 2 participantes para sortear.</p>
+    </div>
+  </section>
+
+  <!-- Resultados -->
+  <section class="card" id="card-resultados" hidden>
+    <h2>Resultados — toca cada tarjeta para revelarla</h2>
+    <div class="grid-resultados" id="grid-resultados"></div>
+    <div style="margin-top: 1.2rem; display: flex; gap: .7rem; justify-content: center; flex-wrap: wrap;">
+      <button class="btn-outline" id="btn-ocultar-todas">🙈 Ocultar todas</button>
+      <button class="btn-outline" id="btn-revelar-todas">🎉 Revelar todas</button>
+      <button class="btn-danger" id="btn-reset">🗑️ Borrar sorteo</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  const LS_LISTA = 'amigoSecreto.participantes.v1';
+  const LS_RES   = 'amigoSecreto.resultados.v1';
+
+  let participantes = cargar(LS_LISTA, []);
+  let resultado     = cargar(LS_RES, null); // Map<giver → receiver>
+  let exclusions    = [];                   // pares [a, b] que no pueden salir juntos
+
+  // ---------- Utilidades ----------
+  function cargar(clave, porDefecto) {
+    try {
+      const v = JSON.parse(localStorage.getItem(clave));
+      return v ?? porDefecto;
+    } catch { return porDefecto; }
+  }
+  function guardar(clave, valor) {
+    localStorage.setItem(clave, JSON.stringify(valor));
+  }
+  function formatear(n) {
+    return n.toLowerCase().replace(/\s+/g, ' ').trim();
+  }
+
+  // ---------- Referencias DOM ----------
+  const $ = (sel) => document.querySelector(sel);
+  const formParticipante = $('#form-participante');
+  const inputNombre      = $('#input-nombre');
+  const contLista        = $('#lista-participantes');
+  const btnSorteo        = $('#btn-sorteo');
+  const msgSorteo        = $('#mensaje-sorteo');
+  const cardResultados   = '#card-resultados';
+  const gridResultados   = $('#grid-resultados');
+  const zonaExclusiones  = $('#zona-exclusiones');
+  const notaExclusiones  = $('#nota-exclusiones');
+
+  // ---------- Render: lista de participantes ----------
+  function renderLista() {
+    contLista.innerHTML = '';
+    if (participantes.length === 0) {
+      contLista.innerHTML = '<p class="vacio">Aún no hay participantes. ¡Agrega el primero!</p>';
+    } else {
+      const ul = document.createElement('ul');
+      participantes.forEach((nombre) => {
+        const li = document.createElement('li');
+        li.className = 'participante';
+        li.innerHTML = `<span class="nombre">👤 <b>${esc(nombre)}</b></span>`;
+        const acciones = document.createElement('div');
+        acciones.className = 'acciones';
+        const btnX = document.createElement('button');
+        btnX.className = 'btn-x';
+        btnX.title = 'Eliminar';
+        btnX.textContent = '✕';
+        btnX.addEventListener('click', () => eliminar(nombre));
+        acciones.appendChild(btnX);
+        li.appendChild(acciones);
+        ul.appendChild(li);
+      });
+      contLista.appendChild(ul);
+    }
+    actualizarEstado();
+  }
+
+  function esc(s) {
+    return s.replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  function eliminar(nombre) {
+    participantes = participantes.filter(p => p !== nombre);
+    exclusions = exclusions.filter(([a, b]) => a !== nombre && b !== nombre);
+    if (resultado && resultado[nombre] !== undefined) resultado = null;
+    guardar(LS_LISTA, participantes);
+    guardar(LS_RES, resultado);
+    renderLista();
+  }
+
+  // ---------- Agregar participante ----------
+  formParticipante.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nombre = inputNombre.value.trim();
+    if (!nombre) return;
+
+    if (participantes.some(p => formatear(p) === formatear(nombre))) {
+      mostrarM('⚠️ Ese participante ya está en la lista.', 'error');
+      return;
+    }
+    participantes.push(nombre);
+    guardar(LS_LISTA, participantes);
+    inputNombre.value = '';
+    inputNombre.focus();
+    mostrarM('');
+    renderLista();
+  });
+
+  function mostrarM(texto, tipo = '') {
+    msgSorteo.textContent = texto;
+    msgSorteo.className = 'mensaje ' + tipo;
+  }
+
+  // ---------- Estado del botón de sorteo ----------
+  function actualizarEstado() {
+    btnSorteo.disabled = participantes.length < 2;
+    if (participantes.length < 2) {
+      mostrarM('Necesitas al menos 2 participantes para sortear.');
+    } else if (msgSorteo.classList.contains('error') || !msgSorteo.textContent) {
+      mostrarM(`Listo para sortear con ${participantes.length} participantes. 🎲`);
+    }
+    renderExclusiones();
+  }
+
+  // ---------- Exclusiones (parejas que no deben tocarse) ----------
+  function renderExclusiones() {
+    zonaExclusiones.innerHTML = '';
+    if (participantes.length < 2) {
+      zonaExclusiones.hidden = true;
+      notaExclusiones.hidden = true;
+      return;
+    }
+    zonaExclusiones.hidden = false;
+    notaExclusiones.hidden = false;
+
+    participantes.forEach((p, i) => {
+      const sels = document.createElement('div');
+      sels.style.cssText = 'display:flex;gap:.4rem;align-items:center;background:var(--surface-2);padding:.4rem .6rem;border-radius:10px;';
+
+      const select = document.createElement('select');
+      select.innerHTML = '<option value="">— no excluye a nadie —</option>' +
+        participantes
+          .filter(q => q !== p)
+          .map(q => `<option value="${esc(q)}">${esc(q)}</option>`)
+          .join('');
+      select.value = exclusionesDe(p);
+      select.addEventListener('change', () => {
+        // quitar exclusiones previas de p, poner la nueva
+        exclusions = exclusions.filter(([a, b]) => a !== p && b !== p);
+        if (select.value) exclusions.push([p, select.value]);
+        if (resultado) { resultado = null; guardar(LS_RES, null); }
+        renderExclusiones();
+      });
+
+      sels.innerHTML = `<span style="font-size:.85rem">${esc(recortar(p, 12))}</span>`;
+      sels.appendChild(select);
+      zonaExclusiones.appendChild(sels);
+    });
+  }
+
+  function recortar(s, n) { return s.length > n ? s.slice(0, n) + '…' : s; }
+
+  function exclusionesDe(p) {
+    const dup = exclusions.filter(([a, b]) => a === p || b === p);
+    return dup.length === 1 ? (dup[0][0] === p ? dup[0][1] : dup[0][0]) : '';
+  }
+
+  // ---------- Algoritmo de sorteo ----------
+  function sortear() {
+    const dom = participantes.slice();
+    const n = dom.length;
+
+    // Intentos aleatorios (max 400) respetando exclusiones y sin autoasignación
+    for (let intento = 0; intento < 400; intento++) {
+      const mezcla = FisherYates(dom.slice());
+      if (esValido(dom, mezcla)) {
+        return Object.fromEntries(dom.map((d, i) => [d, mezcla[i]]));
+      }
+    }
+    // Fallback determinista: rotar la lista
+    // (rota 1 posición, garantiza que nadie se asigne a sí mismo,
+    //  aunque puede violar una exclusión en casos extremos)
+    const rotada = dom.slice(1).concat(dom[0]);
+    return Object.fromEntries(dom.map((d, i) => [d, rotada[i]]));
+  }
+
+  function FisherYates(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function esValido(dadores, receptores) {
+    for (let i = 0; i < dadores.length; i++) {
+      if (dadores[i] === receptores[i]) return false;
+      if (excluidos(dadores[i], receptores[i])) return false;
+    }
+    return true;
+  }
+
+  function excluidos(a, b) {
+    return exclusions.some(([x, y]) =>
+      (x === a && y === b) || (x === b && y === a));
+  }
+
+  // ---------- Render de resultados ----------
+  function renderResultados() {
+    const card = $(cardResultados);
+    if (!resultado) { card.hidden = true; return; }
+    card.hidden = false;
+
+    gridResultados.innerHTML = '';
+    Object.entries(resultado).forEach(([de, para]) => {
+      const t = document.createElement('div');
+      t.className = 'tarjeta';
+      t.innerHTML = `
+        <div class="cara cara-frontal">
+          <span class="emoji">🎁</span>
+          <span>${esc(de)}</span>
+          <span style="font-size:.75rem">toca para revelar</span>
+        </div>
+        <div class="cara cara-trasera">
+          <span class="de">🤫 puede decirse en secreto</span>
+          <span class="para">${esc(de)} → ${esc(para)}</span>
+        </div>
+      `;
+      // Revealed state saved per session (not persisted, so secrets stay hidden by default)
+      t.addEventListener('click', () => t.classList.toggle('revelada'));
+      gridResultados.appendChild(t);
+    });
+  }
+
+  function ocultarTodas() {
+    gridResultados.querySelectorAll('.tarjeta').forEach(t => t.classList.remove('revelada'));
+  }
+  function revelarTodas() {
+    gridResultados.querySelectorAll('.tarjeta').forEach(t => t.classList.add('revelada'));
+  }
+
+  // ---------- Eventos de sorteo ----------
+  btnSorteo.addEventListener('click', () => {
+    if (participantes.length < 2) return;
+    const res = sortear();
+    resultado = res;
+    guardar(LS_RES, resultado);
+    mostrarM('🎉 ¡Sorteo realizado! Toca las tarjetas para revelar.', 'exito');
+    renderResultados();
+    renderExclusiones();
+  });
+
+  $('#btn-ocultar-todas').addEventListener('click', ocultarTodas);
+  $('#btn-revelar-todas').addEventListener('click', revelarTodas);
+
+  $('#btn-reset').addEventListener('click', () => {
+    resultado = null;
+    guardar(LS_RES, null);
+    ocultarTodas();
+    renderResultados();
+    mostrarM(`Listo para sortear con ${participantes.length} participantes. 🎲`);
+  });
+
+  // ---------- Init ----------
+  renderLista();
+  renderResultados();
+})();
+</script>
+
+</body>
+</html>

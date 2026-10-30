@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Amigo Secreto 🎁</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="card">
+      <h1>🎁 Amigo Secreto</h1>
+      <p class="subtitle">
+        Agrega los participantes, haz el sorteo y cada uno recibirá por correo
+        su asignación.<br /><em>Nadie puede salir asignado a sí mismo.</em>
+      </p>
+
+      <form id="form-participante" autocomplete="off">
+        <div class="field">
+          <label for="nombre">Nombre</label>
+          <input id="nombre" type="text" placeholder="Ej. Ana Pérez" required maxlength="80" />
+        </div>
+        <div class="field">
+          <label for="correo">Correo electrónico</label>
+          <input id="correo" type="email" placeholder="ana@ejemplo.com" required maxlength="120" />
+        </div>
+        <button type="submit" class="btn btn-secondary">+ Agregar participante</button>
+      </form>
+
+      <section id="lista-wrap" hidden>
+        <h2>Participantes (<span id="count">0</span>)</h2>
+        <ul id="lista"></ul>
+      </section>
+
+      <button id="btn-sorteo" class="btn btn-primary" disabled>🎲 Realizar sorteo</button>
+
+      <div id="alerta" class="alerta" hidden></div>
+      <div id="resultado" hidden></div>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
