@@ -23,6 +23,10 @@ una única instrucción por sesión, sin contexto compartido entre ejecuciones.
 │   ├── readme.md    # de la asignación por correo a cada participante
 │   ├── app/
 │   └── assets/
+└── iteracion-4/     # Prompt 3 en dos fases: modo plan (arquitectura + preguntas)
+    ├── readme.md    # y luego build en la misma sesión ("Ahora construye lo que planificaste")
+    ├── app/
+    └── assets/
 ```
 
 Cada carpeta incluye:
