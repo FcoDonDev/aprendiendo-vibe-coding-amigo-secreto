@@ -1,7 +1,0 @@
-crea una aplicación del amigo secreto.
-
-Reglas del juego:
-- Se ingresa la lista de participantes (nombre y correo)
-- El sistema sortea de forma aleatoria quién le regala a quién
-- Nadie puede salir asignado a sí mismo
-- Cada participante recibe su asignación por correo electrónico
