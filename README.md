@@ -18,8 +18,11 @@ una única instrucción por sesión, sin contexto compartido entre ejecuciones.
 ├── iteracion-2/     # Prompt 1 + reglas del juego (participantes con correo, sorteo
 │   ├── readme.md    # sin autoasignación, envío por email)
 │   ├── app/
-│   ├── assets/
-│   └── ...
+│   └── assets/
+├── iteracion-3/     # Prompt 2 + alcance: tipo de app (web), sin auth, notificación
+│   ├── readme.md    # de la asignación por correo a cada participante
+│   ├── app/
+│   └── assets/
 ```
 
 Cada carpeta incluye:
