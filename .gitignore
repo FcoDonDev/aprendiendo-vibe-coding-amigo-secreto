@@ -13,3 +13,7 @@ dist/
 *.log
 npm-debug.log*
 tsconfig.tsbuildinfo
+
+# parte-3: insumos locales de trabajo (nunca se versionan)
+parte-3/harness/
+parte-3/analisis/
