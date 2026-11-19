@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+/*
+  Sistema de diseño "festivo cálido":
+  - Rojo regalo (primario), dorado (secundario) y rosa fiesta (acento)
+  - Fondo crema, tarjetas blancas con bordes cálidos y radios generosos
+  Los tokens viven en @theme para que Tailwind genere las utilidades
+  (bg-regalo, text-tinta, font-titulos, …) y quedan en :root como
+  variables para las clases de componentes de más abajo.
+*/
+@theme {
+  --color-regalo: #dc2626;
+  --color-regalo-oscuro: #b91c1c;
+  --color-regalo-suave: #fee2e2;
+  --color-oro: #d97706;
+  --color-oro-suave: #fef3c7;
+  --color-fiesta: #ec4899;
+  --color-crema: #fff1f2;
+  --color-tinta: #0f172a;
+  --color-tinta-suave: #475569;
+  --color-caramelo: #fae4e4;
+
+  --font-sans: var(--font-cuerpo), ui-sans-serif, system-ui, sans-serif;
+  --font-titulos: var(--font-titulo), var(--font-cuerpo), ui-sans-serif, sans-serif;
+}
+
+/*
+  Clases de componentes compartidas: mantienen idénticos los estados
+  (hover, focus visible, disabled) en todos los controles del formulario.
+*/
+@layer components {
+  /* Campos de texto y selecciones */
+  .campo {
+    width: 100%;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-caramelo);
+    background-color: #ffffff;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--color-tinta);
+    outline: none;
+    transition:
+      border-color 200ms,
+      box-shadow 200ms;
+  }
+  .campo::placeholder {
+    color: #94a3b8;
+  }
+  .campo:focus-visible {
+    border-color: var(--color-regalo);
+    box-shadow: 0 0 0 3px var(--color-regalo-suave);
+  }
+
+  /* Botón de acción principal (agregar, añadir exclusión) */
+  .boton-accion {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    border-radius: 0.75rem;
+    background-color: var(--color-regalo);
+    padding: 0.625rem 1.125rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #ffffff;
+    cursor: pointer;
+    transition:
+      background-color 200ms,
+      transform 200ms;
+  }
+  .boton-accion:hover {
+    background-color: var(--color-regalo-oscuro);
+  }
+  .boton-accion:active {
+    transform: scale(0.98);
+  }
+
+  /* Tarjeta de sección: superficie blanca con borde cálido */
+  .tarjeta {
+    border-radius: 1.5rem;
+    border: 1px solid var(--color-caramelo);
+    background-color: #ffffff;
+    padding: 1.5rem;
+    box-shadow: 0 6px 24px rgba(15, 23, 42, 0.05);
+  }
+}
+
+/*
+  Movimiento discreto: las transiciones ya son cortas (150–300 ms);
+  quien prefiera movimiento reducido no las ve.
+*/
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
