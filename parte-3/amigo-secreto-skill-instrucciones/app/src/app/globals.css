@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+/* El modo oscuro se activa con la clase `dark` en <html> (toggle manual
+   persistido en localStorage; el valor inicial lo aplica un script temprano). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Tokens de tema (capa de valores). Cada token semántico tiene una definición
+ * en modo claro (:root) y otra en modo oscuro (.dark); las utilidades de
+ * Tailwind se generan sobre estas variables, por lo que cambiar de tema solo
+ * implica alternar la clase en <html>.
+ */
+:root {
+  --tema-fondo: #fff1f2;
+  --tema-superficie: #ffffff;
+  --tema-superficie-suave: #ffe4e6;
+  --tema-borde: #fecdd3;
+  --tema-borde-fuerte: #fda4af;
+  --tema-texto: #0f172a;
+  --tema-texto-suave: #475569;
+  --tema-primario: #dc2626;
+  --tema-primario-hover: #b91c1c;
+  --tema-sobre-primario: #ffffff;
+  --tema-secundario: #b45309;
+  --tema-oro: #d97706;
+  --tema-acentuado: #ec4899;
+  --tema-peligro: #b91c1c;
+  --tema-peligro-fondo: #fef2f2;
+  --tema-peligro-borde: #fecaca;
+  --tema-exito-fondo: #ecfdf5;
+  --tema-exito-texto: #047857;
+  --tema-foco: #ec4899;
+  --tema-sombra-tarjeta:
+    0 1px 3px rgb(225 29 72 / 0.08), 0 8px 24px rgb(225 29 72 / 0.07);
+  --tema-sombra-cta: 0 6px 18px rgb(220 38 38 / 0.35);
+}
+
+.dark {
+  --tema-fondo: #0f172a;
+  --tema-superficie: #111827;
+  --tema-superficie-suave: #1e293b;
+  --tema-borde: #334155;
+  --tema-borde-fuerte: #475569;
+  --tema-texto: #f8fafc;
+  --tema-texto-suave: #94a3b8;
+  --tema-primario: #dc2626;
+  --tema-primario-hover: #ef4444;
+  --tema-sobre-primario: #ffffff;
+  --tema-secundario: #f59e0b;
+  --tema-oro: #fbbf24;
+  --tema-acentuado: #f472b6;
+  --tema-peligro: #f87171;
+  --tema-peligro-fondo: #450a0a;
+  --tema-peligro-borde: #7f1d1d;
+  --tema-exito-fondo: #052e16;
+  --tema-exito-texto: #6ee7b7;
+  --tema-foco: #f472b6;
+  --tema-sombra-tarjeta: 0 1px 3px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.35);
+  --tema-sombra-cta: 0 6px 18px rgb(220 38 38 / 0.4);
+}
+
+/* Capa semántica: nombra las utilidades de Tailwind sobre los tokens. */
+@theme inline {
+  --font-sans: var(--fuente-cuerpo), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display: var(--fuente-display), var(--fuente-cuerpo), ui-sans-serif,
+    system-ui, sans-serif;
+
+  --color-fondo: var(--tema-fondo);
+  --color-superficie: var(--tema-superficie);
+  --color-superficie-suave: var(--tema-superficie-suave);
+  --color-borde: var(--tema-borde);
+  --color-borde-fuerte: var(--tema-borde-fuerte);
+  --color-texto: var(--tema-texto);
+  --color-texto-suave: var(--tema-texto-suave);
+  --color-primario: var(--tema-primario);
+  --color-primario-hover: var(--tema-primario-hover);
+  --color-sobre-primario: var(--tema-sobre-primario);
+  --color-secundario: var(--tema-secundario);
+  --color-oro: var(--tema-oro);
+  --color-acentuado: var(--tema-acentuado);
+  --color-peligro: var(--tema-peligro);
+  --color-peligro-fondo: var(--tema-peligro-fondo);
+  --color-peligro-borde: var(--tema-peligro-borde);
+  --color-exito-fondo: var(--tema-exito-fondo);
+  --color-exito-texto: var(--tema-exito-texto);
+  --color-foco: var(--tema-foco);
+
+  --radius-control: 0.625rem;
+  --radius-tarjeta: 1rem;
+  --radius-pildora: 999px;
+
+  --shadow-tarjeta: var(--tema-sombra-tarjeta);
+  --shadow-cta: var(--tema-sombra-cta);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Entrada suave de elementos de lista (tarjetas de participantes, etc.). */
+.animar-entrada {
+  animation: entrada 0.35s ease-out backwards;
+}
+
+@keyframes entrada {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Confeti del momento revelación: piezas que caen y giran. */
+.pieza-confeti {
+  position: absolute;
+  top: -16px;
+  width: 10px;
+  height: 14px;
+  border-radius: 2px;
+  opacity: 0.9;
+  animation: caer-confeti var(--duracion, 2.4s) var(--retraso, 0s) ease-in
+    forwards;
+}
+
+@keyframes caer-confeti {
+  from {
+    transform: translateY(0) rotate(0deg);
+  }
+  to {
+    transform: translateY(110vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* Respeto por la preferencia de movimiento reducido: se desactiva solo el
+   movimiento decorativo; los estados de foco y color se conservan. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animar-entrada {
+    animation: none;
+  }
+  .pieza-confeti {
+    display: none;
+  }
+}
